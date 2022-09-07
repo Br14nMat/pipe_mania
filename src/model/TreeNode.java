@@ -4,9 +4,9 @@ public class TreeNode {
 
     private TreeNode left;
     private TreeNode right;
-    private Player value;
+    private Game value;
 
-    public TreeNode(Player value){
+    public TreeNode(Game value){
         this.value = value;
     }
 

@@ -5,25 +5,25 @@ import java.util.Optional;
 
 public class Controller {
 
-    private ArrayList<Player> players;
+    private ArrayList<Game> games;
     private BST scoreboard;
-    private Board board;
+
 
     public Controller(){
-        players = new ArrayList<>();
+        games = new ArrayList<>();
         scoreboard = new BST();
-        board = new Board();
     }
 
     public void newGame(String nickname){
 
-        players.add(new Player(nickname));
-        board.setUpBoard();
+        Game newGame = new Game(nickname);
+        games.add(newGame);
+
     }
 
-    public Player searchPlayer(String nickname){
+    public Game searchGame(String nickname){
 
-        Optional<Player> found = players.stream()
+        Optional<Game> found = games.stream()
                 .filter(p -> p.getNickname().equals(nickname))
                 .findFirst();
 
@@ -34,15 +34,15 @@ public class Controller {
     }
 
     public String showBoard(){
-        return this.board.showBoard();
+        return this.getCurrentGame().showBoard();
     }
 
     public void putPipe(int row,int column, String pipe){
-        this.board.putPipe(row, column, pipe);
+        this.getCurrentGame().putPipe(row, column, pipe);
     }
 
     public void simulateFlow(){
-        this.board.simulateFlow();
+        boolean response = this.getCurrentGame().simulateFlow();
     }
 
     public String showScoreboard(){
@@ -51,9 +51,12 @@ public class Controller {
 
     }
 
-    public Board getBoard(){
-        return  this.board;
+    public Board getLastBoard(){
+        return this.getCurrentGame().getBoard();
     }
 
+    public Game getCurrentGame(){
+        return games.get(games.size() - 1);
+    }
 
 }

@@ -34,11 +34,16 @@ public class Board {
     public void setUpBoard(){
         head = new Pipe(1);
         head.setValue("X");
+
         tail = new Pipe(ROWS * COLUMNS);
         tail.setValue("X");
 
         //this call creates all the boxes
         createBox(tail, head, 2);
+
+        //disconnect head and tail
+        head.setPrevious(null);
+        tail.setNext(null);
 
         int sourcePosition = (int)(Math.random()*(ROWS * COLUMNS) + 1);
         int drainPosition = (int)(Math.random()*(ROWS * COLUMNS) + 1);
@@ -52,16 +57,18 @@ public class Board {
 
     private Pipe searchById(Pipe current, int target){
 
+        if(target < 1 || target > (COLUMNS * ROWS)){
+            return null;
+        }
+
         if(target == current.getId()){
             return current;
         }
 
-        if(target < current.getId() + (ROWS * COLUMNS)){
+        if(target < current.getId()){
             return searchById(current.getPrevious(), target);
-        }else if(target + (ROWS * COLUMNS) > current.getId()){
-            return searchById(current.getNext(), target);
         }else {
-            return null;
+            return searchById(current.getNext(), target);
         }
 
     }
@@ -102,7 +109,9 @@ public class Board {
 
     }
 
-    public void simulateFlow(){}
+    public boolean simulateFlow(){
+        return false;
+    }
 
     public Pipe getHead() {
         return head;

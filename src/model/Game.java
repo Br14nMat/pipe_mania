@@ -1,19 +1,38 @@
 package model;
 
-public class Player {
+public class Game {
 
     private String nickname;
     private double score;
     private int usedPipes;
     private Long elapsedTime;
 
-    public Player(String nickname){
+    private Board board;
+
+    public Game(String nickname){
         this.nickname = nickname;
+
+        board = new Board();
+        board.setUpBoard();
     }
 
     public double calculateScore(){
         return 0;
     }
+
+
+    public String showBoard(){
+        return this.board.showBoard();
+    }
+
+    public void putPipe(int row,int column, String pipe){
+        this.board.putPipe(row, column, pipe);
+    }
+
+    public boolean simulateFlow(){
+        return this.board.simulateFlow();
+    }
+
 
     public String getNickname() {
         return nickname;
@@ -46,4 +65,9 @@ public class Player {
     public void setElapsedTime(Long elapsedTime) {
         this.elapsedTime = elapsedTime;
     }
+
+    public Board getBoard(){
+        return this.board;
+    }
+
 }

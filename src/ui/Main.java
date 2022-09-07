@@ -20,14 +20,18 @@ public class Main {
         test.newGame("Brian");
 
 
-        System.out.println(test.showBoard());
+        //System.out.println(test.showBoard());
 
         test.putPipe(3, 2, "=");
 
-        System.out.println("");
+        //System.out.println("");
 
         System.out.println(test.showBoard());
 
+        int drain = test.getLastBoard().getDrain().getId();
+
+        System.out.println(drain);
+        System.out.println(test.getLastBoard().searchById(drain).getValue());
 
     }
 
