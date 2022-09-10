@@ -1,5 +1,8 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
 public class BST {
 
     private TreeNode root;
@@ -7,19 +10,24 @@ public class BST {
     public BST(){}
 
     public String showScoreboard(){
-        return inOrder(root, "");
+        ArrayList<String> sorted = inOrder(root, new ArrayList<>());
+        Optional<String> scoreboard = sorted.stream().reduce((a, b) -> a + b);
+
+        return scoreboard.isPresent()
+                ? scoreboard.get()
+                : "No one has completed the game yet";
+
     }
 
-    public String inOrder(TreeNode node, String scoreboard){
+    public ArrayList<String> inOrder(TreeNode node, ArrayList<String> scoreboard){
 
         if(node!= null ){
             inOrder(node.getRight(), scoreboard);
-            scoreboard+= node.getValue().getNickname() + ": " + node.getValue().getScore();
+            scoreboard.add(node.getValue().getNickname() + ": " + node.getValue().getScore() + "\n");
             inOrder(node.getLeft(), scoreboard);
-            return scoreboard;
-        }else {
-            return scoreboard;
         }
+
+        return scoreboard;
     }
 
     public void add(Game newGame){
@@ -55,7 +63,5 @@ public class BST {
         }
 
     }
-
-
-
+    
 }

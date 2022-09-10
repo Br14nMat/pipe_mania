@@ -15,7 +15,6 @@ public class Board {
     public final String VERTICAL = "||";
     public final String CIRCULAR = "o";
     public final String VOID = "x";
-
     public final String SOURCE = "F";
 
     public final String DRAIN = "D";
@@ -228,9 +227,9 @@ public class Board {
             Pipe leftBox = current.getPrevious();
 
 
-            if(leftBox.getId() % 8 == 0){
+            if(leftBox.getId() % 8 == 0 && rightBox.getValue().equalsIgnoreCase(VOID)){
                 throw new BoardOutOFBoundsException("Water overflowed from the board!");
-            }else if((rightBox.getId() - 1) % 8 ==0){
+            }else if((rightBox.getId() - 1) % 8 == 0 && leftBox.getValue().equalsIgnoreCase(VOID)){
                 throw new BoardOutOFBoundsException("Water overflowed from the board!");
             }else {
                 return simulateFlow(current, rightBox) || simulateFlow(current, leftBox);

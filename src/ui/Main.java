@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Main {
 
     private Scanner sc;
-    private Controller controller;
+    private static Controller controller;
 
     public Main(){
         sc = new Scanner(System.in);
@@ -21,7 +21,7 @@ public class Main {
 
     }
 
-    private void mainMenu() throws InputMismatchException {
+    public void mainMenu() throws InputMismatchException {
 
         boolean exit = false;
         int option = 0;
@@ -58,7 +58,6 @@ public class Main {
             }
         }
     }
-
 
 
     public void newGame(){
@@ -115,37 +114,11 @@ public class Main {
 
     }
 
-
     public void showScoreboard(){
         System.out.println(controller.showScoreboard());
     }
 
-    public void showGameMenu(){
-
-        System.out.println("1) Put pipe \n" +
-                            "2) Simulate flow \n" +
-                            "3) Exit");
-
-    }
-
-    public void executeGameOption(int option){
-
-        switch (option){
-
-            case 1:
-                putPipe();
-                break;
-            case 2:
-                simulateFlow();
-                break;
-            case 3:
-                System.out.println("leaving the game menu");
-
-        }
-
-    }
-
-    private void putPipe() throws InputMismatchException {
+    public void putPipe() throws InputMismatchException {
 
         System.out.println("Type in the position where you want to place the pipe");
 
@@ -182,7 +155,7 @@ public class Main {
         gameMenu();
     }
 
-    private  int typePipe() throws InputMismatchException {
+    public   int typePipe() throws InputMismatchException {
 
         System.out.println("Choose the type of pipe");
 

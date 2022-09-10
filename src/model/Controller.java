@@ -23,16 +23,6 @@ public class Controller {
 
     }
 
-    public Game searchGame(String nickname){
-
-        Optional<Game> found = games.stream()
-                .filter(p -> p.getNickname().equals(nickname))
-                .findFirst();
-
-        return found.orElse(null);
-
-    }
-
     public String showBoard(){
         return this.getCurrentGame().showBoard();
     }
@@ -93,6 +83,10 @@ public class Controller {
 
     public Game getCurrentGame(){
         return games.get(games.size() - 1);
+    }
+
+    public BST getScoreboard(){
+        return this.scoreboard;
     }
 
 }
