@@ -1,35 +1,54 @@
 package model;
 
+import exception.PipeException;
+
+import java.util.Date;
+
 public class Game {
 
     private String nickname;
-    private double score;
+    private int score;
     private int usedPipes;
-    private Long elapsedTime;
+    private int elapsedTime;
+
+    private Date startTIme;
 
     private Board board;
 
     public Game(String nickname){
         this.nickname = nickname;
+        this.usedPipes = 0;
 
         board = new Board();
         board.setUpBoard();
+
+        startTIme = new Date(System.currentTimeMillis());
     }
 
-    public double calculateScore(){
-        return 0;
+    public void calculateScore(){
+        calculateElapsedTime();
+        this.score = usedPipes * 100 - (60 - elapsedTime ) * 10;
     }
 
+    public void calculateElapsedTime(){
+
+        Date now = new Date(System.currentTimeMillis());
+
+        this.elapsedTime = (int) (now.getTime() - startTIme.getTime())/1000;
+
+    }
 
     public String showBoard(){
         return this.board.showBoard();
     }
 
-    public void putPipe(int row,int column, String pipe){
+    public void putPipe(int row,int column, String pipe) throws PipeException {
         this.board.putPipe(row, column, pipe);
+        usedPipes++;
+
     }
 
-    public boolean simulateFlow(){
+    public boolean simulateFlow() throws Exception {
         return this.board.simulateFlow();
     }
 
@@ -43,10 +62,10 @@ public class Game {
     }
 
     public double getScore() {
-        return score;
+        return this.score;
     }
 
-    public void setScore(double score) {
+    public void setScore(int score) {
         this.score = score;
     }
 
@@ -58,11 +77,11 @@ public class Game {
         this.usedPipes = usedPipes;
     }
 
-    public Long getElapsedTime() {
+    public int getElapsedTime() {
         return elapsedTime;
     }
 
-    public void setElapsedTime(Long elapsedTime) {
+    public void setElapsedTime(int elapsedTime) {
         this.elapsedTime = elapsedTime;
     }
 

@@ -11,6 +11,10 @@ public class Pipe {
         this.id = id;
     }
 
+    public Pipe(String value){
+        this.value = value;
+    }
+
     public int getId() {
         return id;
     }

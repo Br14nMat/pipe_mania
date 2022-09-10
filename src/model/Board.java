@@ -1,11 +1,24 @@
 package model;
 
+import exception.BoardOutOFBoundsException;
+import exception.PipeException;
+import exception.SourceException;
+
 public class Board {
 
     private Pipe head, tail;
     private Pipe source, drain;
     public final int ROWS = 8;
     public final int COLUMNS = 8;
+
+    public final String HORIZONTAL = "=";
+    public final String VERTICAL = "||";
+    public final String CIRCULAR = "o";
+    public final String VOID = "x";
+
+    public final String SOURCE = "F";
+
+    public final String DRAIN = "D";
 
     public Board(){}
 
@@ -23,7 +36,7 @@ public class Board {
             previous.setNext(current);
 
             Pipe newPipe = new Pipe(id);
-            newPipe.setValue("X");
+            newPipe.setValue(VOID);
 
             createBox(current, newPipe, id + 1);
 
@@ -33,10 +46,10 @@ public class Board {
 
     public void setUpBoard(){
         head = new Pipe(1);
-        head.setValue("X");
+        head.setValue(VOID);
 
         tail = new Pipe(ROWS * COLUMNS);
-        tail.setValue("X");
+        tail.setValue(VOID);
 
         //this call creates all the boxes
         createBox(tail, head, 2);
@@ -49,9 +62,9 @@ public class Board {
         int drainPosition = (int)(Math.random()*(ROWS * COLUMNS) + 1);
 
         source = searchById(sourcePosition);
-        source.setValue("F");
+        source.setValue(SOURCE);
         drain = searchById(drainPosition);
-        drain.setValue("D");
+        drain.setValue(DRAIN);
 
     }
 
@@ -101,17 +114,141 @@ public class Board {
 
     }
 
-    public void putPipe(int row, int column, String pipe){
+    public void putPipe(int row, int column, String pipe) throws PipeException{
 
         int position = (row * COLUMNS) + (column + 1);
 
-        searchById(position).setValue(pipe);
+        if(position != source.getId() && position != drain.getId()){
+            searchById(position).setValue(pipe);
+        }else {
+            throw new PipeException("the position of the source or the drain cannot be changed");
+        }
+
+
 
     }
 
-    public boolean simulateFlow(){
+    public boolean simulateFlow() throws Exception {
+        return simulateFlow(this.source, this.source);
+    }
+
+    private boolean simulateFlow (Pipe previous, Pipe current) throws Exception{
+
+        if(current == null || current.getValue().equalsIgnoreCase(VOID)){
+            return false;
+        }
+
+        if(current == drain){
+            return true;
+        }
+
+        if(current == source){
+
+            Pipe topBox = searchById(source.getId() - COLUMNS);
+            Pipe bottomBox = searchById(source.getId() + COLUMNS);
+            Pipe rightBox = source.getNext();
+            Pipe leftBox = source.getPrevious();
+
+
+            if((rightBox.getValue().equalsIgnoreCase(HORIZONTAL) && leftBox.getValue().equalsIgnoreCase(HORIZONTAL)
+            ||(topBox.getValue().equalsIgnoreCase(VERTICAL) && bottomBox.getValue().equalsIgnoreCase(VERTICAL)))){
+                throw new SourceException("The source can only be connected to one pipe.");
+            }
+
+            if(rightBox.getValue().equalsIgnoreCase(HORIZONTAL)){
+                return simulateFlow(current, rightBox);
+            }else if(leftBox.getValue().equalsIgnoreCase(HORIZONTAL)){
+                return simulateFlow(current, leftBox);
+            }else if(topBox.getValue().equalsIgnoreCase(VERTICAL)){
+                return simulateFlow(current, topBox);
+            }else if(bottomBox.getValue().equalsIgnoreCase(VERTICAL)){
+                return simulateFlow(current, bottomBox);
+            }else {
+                throw new SourceException("The source is not connected correctly");
+            }
+
+        }
+
+        if (current.getValue().equalsIgnoreCase(HORIZONTAL)) {
+
+            if(previous.getValue().equalsIgnoreCase(VERTICAL)){
+                return false;
+            }
+
+            if(previous.getId() < current.getId()){
+                if(previous.getId() % COLUMNS != 0 ){
+                    return simulateFlow(current, current.getNext());
+                }else{
+                    throw new BoardOutOFBoundsException("Water overflowed from the board!");
+                }
+            }else {
+                if((previous.getId() - 1) % COLUMNS != 0 ){
+                    return simulateFlow(current, current.getPrevious());
+                }else{
+                    throw new BoardOutOFBoundsException("Water overflowed from the board!");
+                }
+
+            }
+
+        }
+
+        if(current.getValue().equalsIgnoreCase(VERTICAL)){
+
+            if(previous.getValue().equalsIgnoreCase(HORIZONTAL)){
+                return false;
+            }
+
+            if(previous.getId() < current.getId()){
+                return simulateFlow(current, searchById(current.getId() + COLUMNS));
+            }else {
+                return simulateFlow(current, searchById(current.getId() - COLUMNS));
+            }
+
+        }
+
+        if(current.getValue().equalsIgnoreCase(CIRCULAR) &&
+                previous.getValue().equalsIgnoreCase(HORIZONTAL)){
+
+            Pipe topBox = searchById(current.getId() - COLUMNS);
+            Pipe bottomBox = searchById(current.getId() + COLUMNS);
+
+            if(topBox == null || bottomBox == null){
+                throw new BoardOutOFBoundsException("Water overflowed from the board!");
+            }else{
+                return simulateFlow(current, topBox) || simulateFlow(current, bottomBox);
+            }
+
+        }
+
+
+        if(current.getValue().equalsIgnoreCase(CIRCULAR) &&
+                previous.getValue().equalsIgnoreCase(VERTICAL)){
+
+            Pipe rightBox = current.getNext();
+            Pipe leftBox = current.getPrevious();
+
+
+            if(leftBox.getId() % 8 == 0){
+                throw new BoardOutOFBoundsException("Water overflowed from the board!");
+            }else if((rightBox.getId() - 1) % 8 ==0){
+                throw new BoardOutOFBoundsException("Water overflowed from the board!");
+            }else {
+                return simulateFlow(current, rightBox) || simulateFlow(current, leftBox);
+            }
+
+
+        }
+
+        if(current.getValue().equalsIgnoreCase(CIRCULAR) &&
+                previous.getValue().equalsIgnoreCase(CIRCULAR)){
+
+            throw new PipeException("You cannot connect two circular pipes");
+        }
+
         return false;
+
     }
+
 
     public Pipe getHead() {
         return head;
@@ -129,11 +266,11 @@ public class Board {
         this.tail = tail;
     }
 
-    public Pipe getSource() {
+    public Pipe getsource() {
         return source;
     }
 
-    public void setSource(Pipe source) {
+    public void setsource(Pipe source) {
         this.source = source;
     }
 
