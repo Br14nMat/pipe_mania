@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Main {
 
     private Scanner sc;
-    private static Controller controller;
+    private Controller controller;
 
     public Main(){
         sc = new Scanner(System.in);
@@ -69,8 +69,6 @@ public class Main {
 
         System.out.println(controller.showBoard());
 
-        int option = 0;
-
         gameMenu();
 
     }
@@ -89,8 +87,7 @@ public class Main {
 
                 option = sc.nextInt();
                 sc.nextLine();
-            }
-            catch(InputMismatchException e) {
+            }catch(InputMismatchException e) {
                 System.out.println("Enter a valid option.");
                 sc.nextLine();
             }
@@ -101,7 +98,7 @@ public class Main {
                     break;
                 case 2:
                     System.out.println("Simulating flow");
-                    simulateFlow();
+                    if(simulateFlow()) exit = true;
                     break;
                 case 3:
                     exit = true;
@@ -141,28 +138,9 @@ public class Main {
 
             }while(columnPipe < 0 || columnPipe > 7 );
 
-            int typeOfPipe = typePipe();
-
-            System.out.println(controller.putPipe(rowPipe, columnPipe, typeOfPipe));
-        }
-        catch(InputMismatchException e){
-            System.out.println("Enter a valid option");
-            sc.nextLine();
-        }
-
-
-        System.out.println(controller.showBoard());
-        gameMenu();
-    }
-
-    public   int typePipe() throws InputMismatchException {
-
-        System.out.println("Choose the type of pipe");
-
-        boolean exit = false;
-        int pipeType = 0;
-
-        try {
+            int pipeType = 0;
+            
+            System.out.println("Choose the type of pipe");
 
             do{
                 System.out.println("1. = horizontal");
@@ -173,35 +151,42 @@ public class Main {
                 pipeType = sc.nextInt();
                 sc.nextLine();
 
-            }while (pipeType < 0 || pipeType > 4);
+            }while (pipeType < 1 || pipeType > 4);
+            
+
+            System.out.println(controller.putPipe(rowPipe, columnPipe, pipeType));
         }
         catch(InputMismatchException e){
             System.out.println("Enter a valid option");
             sc.nextLine();
         }
 
-        return pipeType;
 
+        System.out.println(controller.showBoard());
+        
     }
 
 
-    public void simulateFlow(){
-
+    public boolean simulateFlow(){
+    	
+    	boolean done = false;
+    	
         try {
             boolean isCorrect = controller.simulateFlow();
 
             if(isCorrect){
                 System.out.println("Congratulations, you won!");
-                mainMenu();
+                done = true;
             }else {
                 System.out.println("Sorry, the piping does not work");
             }
 
-        } catch (Exception e) {
+        }catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
-
+        
+        return done;
+        
     }
 
 }

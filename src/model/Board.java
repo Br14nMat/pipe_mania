@@ -149,18 +149,19 @@ public class Board {
             Pipe leftBox = source.getPrevious();
 
 
-            if((rightBox.getValue().equalsIgnoreCase(HORIZONTAL) && leftBox.getValue().equalsIgnoreCase(HORIZONTAL)
-            ||(topBox.getValue().equalsIgnoreCase(VERTICAL) && bottomBox.getValue().equalsIgnoreCase(VERTICAL)))){
+            if((rightBox != null && leftBox != null && topBox != null && bottomBox != null)
+            && ((rightBox.getValue().equalsIgnoreCase(HORIZONTAL) && leftBox.getValue().equalsIgnoreCase(HORIZONTAL)
+            || (topBox.getValue().equalsIgnoreCase(VERTICAL) && bottomBox.getValue().equalsIgnoreCase(VERTICAL))))){
                 throw new SourceException("The source can only be connected to one pipe.");
             }
 
-            if(rightBox.getValue().equalsIgnoreCase(HORIZONTAL)){
+            if(rightBox != null && rightBox.getValue().equalsIgnoreCase(HORIZONTAL)){
                 return simulateFlow(current, rightBox);
-            }else if(leftBox.getValue().equalsIgnoreCase(HORIZONTAL)){
+            }else if(leftBox != null && leftBox.getValue().equalsIgnoreCase(HORIZONTAL)){
                 return simulateFlow(current, leftBox);
-            }else if(topBox.getValue().equalsIgnoreCase(VERTICAL)){
+            }else if(topBox != null && topBox.getValue().equalsIgnoreCase(VERTICAL)){
                 return simulateFlow(current, topBox);
-            }else if(bottomBox.getValue().equalsIgnoreCase(VERTICAL)){
+            }else if(bottomBox != null && bottomBox.getValue().equalsIgnoreCase(VERTICAL)){
                 return simulateFlow(current, bottomBox);
             }else {
                 throw new SourceException("The source is not connected correctly");
@@ -225,8 +226,8 @@ public class Board {
 
             Pipe rightBox = current.getNext();
             Pipe leftBox = current.getPrevious();
-
-
+            
+            
             if(leftBox.getId() % 8 == 0 && rightBox.getValue().equalsIgnoreCase(VOID)){
                 throw new BoardOutOFBoundsException("Water overflowed from the board!");
             }else if((rightBox.getId() - 1) % 8 == 0 && leftBox.getValue().equalsIgnoreCase(VOID)){
