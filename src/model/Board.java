@@ -211,8 +211,10 @@ public class Board {
 
             Pipe topBox = searchById(current.getId() - COLUMNS);
             Pipe bottomBox = searchById(current.getId() + COLUMNS);
-
-            if(topBox == null || bottomBox == null){
+            
+            if(topBox == null && bottomBox.getValue().equalsIgnoreCase(VOID)) {
+            	throw new BoardOutOFBoundsException("Water overflowed from the board!");
+            }else if(bottomBox == null && topBox.getValue().equalsIgnoreCase(VOID)){
                 throw new BoardOutOFBoundsException("Water overflowed from the board!");
             }else{
                 return simulateFlow(current, topBox) || simulateFlow(current, bottomBox);
